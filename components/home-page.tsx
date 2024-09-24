@@ -5,6 +5,7 @@ import { Search, ShoppingCart, User } from 'lucide-react'
 import * as Separator from '@radix-ui/react-separator'
 import { useCart } from '../lib/cart-context'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image';
 
 const products = [
   { id: 1, name: '现代沙发', price: 999, image: '/placeholder.svg?height=200&width=200' },
@@ -64,7 +65,7 @@ export function HomePageComponent() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
               <Link key={product.id} href={`/product/${product.id}`} className="bg-white rounded-lg shadow-md overflow-hidden block">
-                <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                <Image src={product.image} alt={product.name} width={500} height={500} />
                 <div className="p-4">
                   <h2 className="font-semibold text-lg mb-2">{product.name}</h2>
                   <p className="text-gray-600">¥{product.price}</p>

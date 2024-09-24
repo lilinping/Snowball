@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useCart } from '../lib/cart-context'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image';
 
 export function CartPageComponent() {
   const { cartItems, removeFromCart } = useCart()
@@ -35,7 +36,7 @@ export function CartPageComponent() {
             <div className="grid grid-cols-1 gap-6">
               {cartItems.map((item) => (
                 <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
+                  <Image src={item.image} alt={item.name} width={500} height={500} />
                   <div className="p-4">
                     <h2 className="font-semibold text-lg mb-2">{item.name}</h2>
                     <p className="text-gray-600">¥{item.price}</p>

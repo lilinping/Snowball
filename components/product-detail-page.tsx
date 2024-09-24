@@ -1,12 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useCart } from '../lib/cart-context'
+import Image from 'next/image'
 
 export function ProductDetailPageComponent() {
-  const router = useRouter()
+  // Remove the unused router variable
+  // const router = useRouter()
   const { addToCart } = useCart()
   const [product, setProduct] = useState<{ id: string; name: string; price: number; image: string; description: string } | null>(null)
 
@@ -47,7 +48,7 @@ export function ProductDetailPageComponent() {
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <img src={product.image} alt={product.name} className="w-full h-96 object-cover" />
+            <Image src={product.image} alt={product.name} width={500} height={500} />
             <div>
               <h1 className="text-3xl font-extrabold text-gray-900 mb-4">{product.name}</h1>
               <p className="text-gray-600 mb-4">¥{product.price}</p>
