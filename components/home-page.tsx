@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { Search, ShoppingCart, User } from 'lucide-react'
 import * as Separator from '@radix-ui/react-separator'
+import { useCart } from '../lib/cart-context'
+import { useRouter } from 'next/navigation'
 
 const products = [
   { id: 1, name: '现代沙发', price: 999, image: '/placeholder.svg?height=200&width=200' },
@@ -12,6 +14,13 @@ const products = [
 ]
 
 export function HomePageComponent() {
+  const { addToCart, cartItems } = useCart()
+  const cartItemCount = cartItems.length
+  const router = useRouter()
+  const handleCheckout = (product: { id: number; name: string; price: number; image: string }) => {
+    router.push('/checkout?items=' + encodeURIComponent(JSON.stringify([product])))
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-sm">
@@ -33,9 +42,14 @@ export function HomePageComponent() {
                   <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
                 </div>
               </div>
-              <button className="ml-4 p-2 text-gray-400 hover:text-gray-500">
+              <Link href="/cart" className="ml-4 p-2 text-gray-400 hover:text-gray-500 relative">
                 <ShoppingCart className="h-6 w-6" />
-              </button>
+                {cartItemCount > 0 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Link>
               <button className="ml-4 p-2 text-gray-400 hover:text-gray-500">
                 <User className="h-6 w-6" />
               </button>
@@ -49,16 +63,31 @@ export function HomePageComponent() {
           <h1 className="text-3xl font-extrabold text-gray-900 mb-6">热门产品</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+              <Link key={product.id} href={`/product/${product.id}`} className="bg-white rounded-lg shadow-md overflow-hidden block">
                 <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
                 <div className="p-4">
                   <h2 className="font-semibold text-lg mb-2">{product.name}</h2>
                   <p className="text-gray-600">¥{product.price}</p>
-                  <button className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      addToCart(product)
+                    }}
+                    className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
+                  >
                     加入购物车
                   </button>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleCheckout(product)
+                    }}
+                    className="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+                  >
+                    立即下单
+                  </button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

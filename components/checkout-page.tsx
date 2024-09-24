@@ -1,16 +1,20 @@
 'use client'
 
 import Link from 'next/link'
-import { useCart } from '../lib/cart-context'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-export function CartPageComponent() {
-  const { cartItems, removeFromCart } = useCart()
+export function CheckoutPageComponent() {
   const router = useRouter()
+  const [items, setItems] = useState([])
 
-  const handleCheckout = () => {
-    router.push('/checkout?items=' + encodeURIComponent(JSON.stringify(cartItems)))
-  }
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const items = searchParams.get('items');
+    if (items) {
+      setItems(JSON.parse(items))
+    }
+  }, [])
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -28,31 +32,24 @@ export function CartPageComponent() {
 
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">购物车</h1>
-          {cartItems.length === 0 ? (
-            <p className="text-gray-600">您的购物车是空的。</p>
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">结账</h1>
+          {items.length === 0 ? (
+            <p className="text-gray-600">没有选择任何商品。</p>
           ) : (
             <div className="grid grid-cols-1 gap-6">
-              {cartItems.map((item) => (
+              {items.map((item: { id: string; image: string; name: string; price: number }) => (
                 <div key={item.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                   <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
                   <div className="p-4">
                     <h2 className="font-semibold text-lg mb-2">{item.name}</h2>
                     <p className="text-gray-600">¥{item.price}</p>
-                    <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="mt-4 w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition duration-200"
-                    >
-                      移除
-                    </button>
                   </div>
                 </div>
               ))}
               <button
-                onClick={handleCheckout}
-                className="mt-4 w-full bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition duration-200"
+                className="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
               >
-                立即下单
+                确认付款
               </button>
             </div>
           )}
